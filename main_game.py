@@ -54,6 +54,7 @@ class Game:
         """
         self._initialized = False
         self.s = self.p = []
+        self.powerup_manager = PowerUpManager()
 
     def _lazy_init(self):
         """
@@ -381,6 +382,22 @@ class Game:
             logging.exception(e)
             return 0
         return 0
+
+class PowerUpManager:
+    """Manages power-ups and their activation."""
+    def __init__(self):
+        self.active_powerups = []
+
+    def activate(self, powerup_name, duration, callback):
+        """Activates a power-up for a specific duration."""
+        self.active_powerups.append(powerup_name)
+        pygame.time.set_timer(USEREVENT + len(self.active_powerups) + 10, duration * 1000)
+        callback()
+
+    def deactivate(self, powerup_name):
+        """Deactivates a power-up."""
+        if powerup_name in self.active_powerups:
+            self.active_powerups.remove(powerup_name)
 
 def main():
     pygame.init()
